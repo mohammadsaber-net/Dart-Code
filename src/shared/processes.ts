@@ -19,11 +19,15 @@ export function safeSpawn(workingDirectory: string | undefined, binPath: string,
 	if (isWin && binPath.endsWith(".bat")) {
 		const quotedArgs = args.map(quoteAndEscapeArg);
 		// Putting quotes around something like "git" will cause it to fail, so don't do it if binPath is just a single identifier.
-		binPath = simpleCommandRegex.test(binPath) ? binPath : `"${binPath}"`;
+		binPath = programNeedsQuoting(binPath) ? `"${binPath}"` : binPath;
 		return child_process.spawn(binPath, quotedArgs, { cwd: workingDirectory, env: customEnv, shell: true }) as SpawnedProcess;
 	}
 
 	return child_process.spawn(binPath, args, { cwd: workingDirectory, env: customEnv }) as SpawnedProcess;
+}
+
+export function programNeedsQuoting(program: string) {
+	return !simpleCommandRegex.test(program);
 }
 
 function quoteAndEscapeArg(arg: string) {

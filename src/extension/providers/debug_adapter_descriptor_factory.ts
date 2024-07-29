@@ -2,9 +2,10 @@ import * as path from "path";
 import { DebugAdapterDescriptor, DebugAdapterDescriptorFactory, DebugAdapterExecutable, DebugAdapterExecutableOptions, DebugAdapterServer, DebugSession } from "vscode";
 import { DartCapabilities } from "../../shared/capabilities/dart";
 import { FlutterCapabilities } from "../../shared/capabilities/flutter";
-import { dartVMPath, debugAdapterPath, executableNames, flutterPath } from "../../shared/constants";
+import { dartVMPath, debugAdapterPath, executableNames, flutterPath, isWin } from "../../shared/constants";
 import { DebuggerType } from "../../shared/enums";
 import { DartSdks, Logger } from "../../shared/interfaces";
+import { programNeedsQuoting } from "../../shared/processes";
 import { getDebugAdapterName, getDebugAdapterPort } from "../../shared/utils/debug";
 import { fsPath, isWithinPathOrEqual } from "../../shared/utils/fs";
 import { getDartWorkspaceFolders } from "../../shared/vscode/utils";
@@ -126,7 +127,7 @@ export class DartDebugAdapterDescriptorFactory implements DebugAdapterDescriptor
 			this.logger.info(`Running custom Flutter debugger using Dart VM with args ${args.join("    ")} and options ${JSON.stringify(executableOptions)}`);
 			return new DebugAdapterExecutable(path.join(this.sdks.dart, dartVMPath), args, executableOptions);
 		} else if (useSdkDap) {
-			const executable = isDartOrDartTest
+			let executable = isDartOrDartTest
 				? path.join(this.sdks.dart, dartVMPath)
 				: this.workspaceContext.config.flutterToolsScript?.script ?? (this.sdks.flutter ? path.join(this.sdks.flutter, flutterPath) : executableNames.flutter);
 
@@ -138,6 +139,15 @@ export class DartDebugAdapterDescriptorFactory implements DebugAdapterDescriptor
 
 			if (this.workspaceContext.config.flutterSdkHome)
 				executableOptions.cwd = this.workspaceContext.config.flutterSdkHome;
+
+			const useShell = !isDartOrDartTest && isWin;
+
+			if (useShell) {
+				// TODO(dantup): Remove cast when we have a vscode.d.ts with `shell`.
+				(executableOptions as any).shell = true;
+				if (programNeedsQuoting(executable))
+					executable = `"${executable}"`;
+			}
 
 			this.logger.info(`Running SDK DAP Dart VM in ${executableOptions.cwd}: ${executable} ${args.join("    ")} and options ${JSON.stringify(executableOptions)}`);
 			logDebuggerStart(true);
@@ -153,6 +163,6 @@ export class DartDebugAdapterDescriptorFactory implements DebugAdapterDescriptor
 		const args = [this.extensionContext.asAbsolutePath(debugAdapterPath), debuggerName];
 		this.logger.info(`Running debugger via node with ${args.join("    ")}`);
 		logDebuggerStart(false);
-		return new DebugAdapterExecutable("node", args);
+		return new DebugAdapterExecutable("node", args, {});
 	}
 }
