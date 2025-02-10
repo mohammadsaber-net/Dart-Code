@@ -470,6 +470,9 @@ export class LspAnalyzer extends Analyzer {
 			middleware,
 			outputChannelName: "LSP",
 			revealOutputChannelOn: ls.RevealOutputChannelOn.Never,
+			textSynchronization: {
+				delayOpenNotifications: true,
+			},
 			uriConverters: {
 				// Don't just use "converters" here because LSP doesn't bind "this".
 				code2Protocol: (uri) => converters.code2Protocol(uri),
