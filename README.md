@@ -82,6 +82,7 @@ This extension reports some analytics such as:
 - Frequency of use of features like Hot Reload and Hot Restart
 
 Reporting can be disabled via VS Code's standard **Telemetry: Telemetry Level** setting.
+<h1>app fork belongs to me</h1>
 
 
 ## Release Notes
