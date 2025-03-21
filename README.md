@@ -1,3 +1,7 @@
+
+
+
+
 [![Discord Chat](https://img.shields.io/badge/chat-discord-blue.svg)](https://discord.gg/xSTPEqm)
 [![Follow on Twitter](https://img.shields.io/badge/twitter-dartcode-blue.svg)](https://twitter.com/DartCode)
 [![Contribute to Dart Code](https://img.shields.io/badge/help-contribute-551A8B.svg)](https://github.com/Dart-Code/Dart-Code/blob/master/CONTRIBUTING.md)
@@ -10,11 +14,6 @@ effectively editing, refactoring, running, and reloading [Flutter](https://flutt
 mobile apps.
 
 
-## Installation
-
-Dart Code can be [installed from the Visual Studio Code Marketplace](https://marketplace.visualstudio.com/items?itemName=Dart-Code.dart-code) or by [searching within VS Code](https://code.visualstudio.com/docs/editor/extension-gallery#_search-for-an-extension).
-
-If you have any issues using Dart Code, please file issues on GitHub at [https://github.com/Dart-Code/Dart-Code/issues/new/choose](https://github.com/Dart-Code/Dart-Code).
 
 
 ## Features
